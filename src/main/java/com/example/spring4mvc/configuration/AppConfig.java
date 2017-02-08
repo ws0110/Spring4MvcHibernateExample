@@ -14,7 +14,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @ComponentScan({"com.example.spring4mvc"})
 public class AppConfig {
-
+ 
 	@Bean
 	public ViewResolver viewResolver(){
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
