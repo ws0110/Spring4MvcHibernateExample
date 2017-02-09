@@ -17,6 +17,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
+
 @Entity
 @Table(name="EMPLOYEE")
 public class Employee {
@@ -33,6 +37,7 @@ public class Employee {
     @DateTimeFormat(pattern="yyyy-MM-dd") 
 	@Column(name = "JOINING_DATE", nullable = false)
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSZ")
 	private LocalDate joiningDate;
 	
 	@NotNull
