@@ -54,4 +54,9 @@ public class UserDaoTest {
 		User user = userDao.findById(3);
 		System.out.println(user);
 	}
+	
+	@Test
+	public void findAllUsers(){
+		System.out.println(userDao.findAllUser());
+	}
 }

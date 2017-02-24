@@ -1,19 +1,13 @@
 package com.example.spring4mvc.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.meta.When;
-import javax.net.ssl.SSLEngineResult.Status;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -24,24 +18,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.example.spring4mvc.configuration.AppConfig;
-import com.example.spring4mvc.configuration.AppConfigTest;
-import com.example.spring4mvc.configuration.AppInitializer;
-import com.example.spring4mvc.configuration.HibernateConfigurationTest;
 import com.example.spring4mvc.model.Employee;
 import com.example.spring4mvc.service.EmployeeService;
 
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={AppConfigTest.class})
+@ContextConfiguration(classes={AppConfig.class})
 @WebAppConfiguration
 public class MockMvcControllerTest {
 
@@ -53,10 +45,14 @@ public class MockMvcControllerTest {
 	@InjectMocks
 	AppController apiController;
 	
+	@Autowired
+	WebApplicationContext context;
+	
 	@Before
 	public void setup(){
 		MockitoAnnotations.initMocks(this);
-		mockMvc = MockMvcBuilders.standaloneSetup(apiController).build();
+		//mockMvc = MockMvcBuilders.standaloneSetup(apiController).build();
+		mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 		
 		employees = getEmployeeList();
 	}
@@ -65,17 +61,23 @@ public class MockMvcControllerTest {
 	List<Employee> employees = new ArrayList<Employee>();
 	
 	@Test
-	public void listTest() throws Exception{
+	public void lisTest() throws Exception{
 		
 		when(employeeService.findAllEmployees()).thenReturn(employees);
 		
-		mockMvc.perform(get("/list"))
+		MvcResult result = mockMvc.perform(get("/list"))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn();
-		
 	}
 	
+	
+	@Test
+	public void listUser() throws Exception{
+		mockMvc.perform(get("/api/users"))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
 	
 	
 	public List<Employee> getEmployeeList(){
